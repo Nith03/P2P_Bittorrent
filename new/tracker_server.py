@@ -18,11 +18,14 @@ class TrackerServer:
                     self.files[file_name] = set()
                 self.files[file_name].add(peer_address)
                 client_socket.sendall(b"ACK_REGISTER")
+                print(f"Registered {peer_address} for file {file_name}")
+                print(f"Tracker state: {self.files}")
 
             elif command == 'DISCOVER':
                 file_name = args[0]
                 peers = list(self.files.get(file_name, []))
                 client_socket.sendall('|'.join(peers).encode())
+                print(f"Discovery request for {file_name}, peers: {peers}")
         except Exception as e:
             print(f"Error: {e}")
         finally:
