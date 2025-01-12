@@ -5,7 +5,7 @@ def calculate_file_hash(file_path):
     hash_func = hashlib.sha256()
     try:
         with open(file_path, "rb") as file:
-            while chunk := file.read(8192):  # Read the file in 8 KB chunks
+            while chunk := file.read(8192):  
                 hash_func.update(chunk)
     except FileNotFoundError:
         print(f"File not found: {file_path}")
@@ -32,9 +32,7 @@ def validate_files(original_file, reconstructed_file):
         return False
 
 if __name__ == "__main__":
-    # Specify the paths to the original and reconstructed files
-    original_file = r"F:\acnn\P2P_Bittorrent\new\CS1 S11.txt"  # Path to the original file
-    reconstructed_file = r"F:\acnn\P2P_Bittorrent\new\reconstructed_file.txt"  # Path to the reconstructed file
+    original_file = r"F:\acnn\P2P_Bittorrent\new\CS1 S11.txt"  
+    reconstructed_file = r"F:\acnn\P2P_Bittorrent\new\reconstructed_file.txt"  
 
-    # Perform validation
     validate_files(original_file, reconstructed_file)

@@ -5,7 +5,7 @@ class TrackerServer:
     def __init__(self, host='0.0.0.0', port=5000):
         self.host = host
         self.port = port
-        self.files = {}  # {file_name: {peer_address, ...}}
+        self.files = {}  
     
     def handle_client(self, client_socket):
         try:

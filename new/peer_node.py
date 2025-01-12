@@ -65,7 +65,7 @@ def request_chunk(peer_address, chunk_id):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect(peer_address)
             sock.sendall(f"REQUEST|{chunk_id}".encode())
-            data = sock.recv(1024 * 256)  # Adjust buffer size as needed
+            data = sock.recv(1024 * 256)  
             return data
     except Exception as e:
         print(f"Error requesting chunk: {e}")
@@ -74,7 +74,6 @@ def request_chunk(peer_address, chunk_id):
 def download_file(tracker_address, file_name, output_file, chunk_count, expected_hashes):
     """Handles downloading the file by requesting chunks from peers."""
     try:
-        # Step 1: Discover peers
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
             sock.connect(tracker_address)
             sock.sendall(f"DISCOVER|{file_name}".encode())
@@ -85,7 +84,6 @@ def download_file(tracker_address, file_name, output_file, chunk_count, expected
             print("No peers available for the requested file.")
             return
 
-        # Step 2: Download chunks
         chunks = [None] * chunk_count
         for chunk_id in range(chunk_count):
             for peer in peers:
@@ -93,7 +91,6 @@ def download_file(tracker_address, file_name, output_file, chunk_count, expected
                 peer_address = (peer_ip, int(peer_port))
                 chunk_data = request_chunk(peer_address, chunk_id)
 
-                # Verify the hash of the downloaded chunk
                 if chunk_data and hashlib.sha256(chunk_data).hexdigest() == expected_hashes[chunk_id]:
                     chunks[chunk_id] = chunk_data
                     break
@@ -102,7 +99,6 @@ def download_file(tracker_address, file_name, output_file, chunk_count, expected
             else:
                 print(f"Chunk {chunk_id} could not be downloaded.")
 
-        # Step 3: Reconstruct the file
         if None in chunks:
             print("File reconstruction failed: Missing or corrupted chunks.")
             return
@@ -126,10 +122,8 @@ def load_hashes(hash_file):
         return None
 
 if __name__ == "__main__":
-    # Start peer server
     threading.Thread(target=peer_server, args=("0.0.0.0", 6000)).start()
 
-    # Register the file with the tracker
     tracker_address = ("127.0.0.1", 5000)
     file_name = "file.txt"
 
@@ -138,17 +132,15 @@ if __name__ == "__main__":
             sock.connect(tracker_address)
             sock.sendall(f"REGISTER|{file_name}|127.0.0.1:6000".encode())
             response = sock.recv(1024).decode()
-            print(response)  # Expect "ACK_REGISTER"
+            print(response)  
         except Exception as e:
             print(f"Error registering with tracker: {e}")
 
-    # Load expected hashes
     expected_hashes = load_hashes("hashes.txt")
     if not expected_hashes:
         print("Failed to load hashes. Exiting.")
         exit(1)
 
-    # Attempt to download the file
     chunk_count = len(expected_hashes)
     download_file(tracker_address, file_name, "reconstructed_file.txt", chunk_count, expected_hashes)
 

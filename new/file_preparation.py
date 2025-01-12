@@ -1,7 +1,6 @@
 import os
 import hashlib
 
-# File Chunking and Hashing
 def split_file(file_path, chunk_size=256 * 1024):
     """Splits the file into chunks and generates their SHA-256 hashes."""
     chunks = []
@@ -28,18 +27,14 @@ def save_hashes(hashes, output_file="hashes.txt"):
             file.write(hash_value + "\n")
 
 if __name__ == "__main__":
-    file_path = r"F:\acnn\P2P_Bittorrent\new\CS1 S11.txt"  # Replace with your file path
+    file_path = r"F:\acnn\P2P_Bittorrent\new\CS1 S11.txt"  
 
-    # Step 1: Split the file into chunks and compute hashes
     chunks, hashes = split_file(file_path)
 
-    # Step 2: Save chunks to a directory
     save_chunks(chunks)
 
-    # Step 3: Save hashes to a file
     save_hashes(hashes)
 
-    # Step 4: Output hashes for integrity verification
     print("File chunks created and hashes are:")
     for i, h in enumerate(hashes):
         print(f"Chunk {i}: {h}")
